@@ -9,7 +9,7 @@ class RegistroController < ApplicationController
     logger.info "Received new accounting row: #{body}"
 
     Registro.new.add_row body.split(",")
-    @reply = "Success"
+    @reply = "Thanks. Registro was updated."
 
     render :template => 'sms_response'
   end
