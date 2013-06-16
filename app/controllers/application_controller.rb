@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
       flash[:warning] = message
     end
   end
-
+ 
   def index
   end
 end
