@@ -1,8 +1,8 @@
 class AccountingRow
   attr_accessor :date, :id, :description, :amount, :account
   
-  def initialize string
-    @id, @description, @amount, @account = string.split(",")
+  def initialize params
+    @id, @description, @amount, @account = *params
     @date = Time.now
   end
 

@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
     if @@COMMANDS.include? sms_code
       method = Rails.application.routes.url_helpers.method(@@COMMANDS[sms_code])
-      redirect_to(method.call(params.merge({"Body" => body.split(",").drop(1).join(",")}))) and return 
+      redirect_to(method.call(params)) and return 
     end
 
     @reply = "Sorry. We do not recognize the SMS code you sent: #{sms_code}"
