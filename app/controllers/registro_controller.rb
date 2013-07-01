@@ -6,9 +6,9 @@ class RegistroController < ApplicationController
 
   def add
     body = params["Body"]
-    logger.info "Trying to add new accounting record:  #{body}"
+    logger.info "Trying to add new accounting record: #{body}"
 
-    Registro.new.add_row body.split(",")
+    Registro.new.add_row AccountingRow.new(body)
     @reply = "Thanks. Registro was updated."
 
     render :template => 'sms_response'
@@ -16,9 +16,9 @@ class RegistroController < ApplicationController
 
   def transfer
     body = params["Body"]
-    logger.info "Trying to execute a transfer:  #{body}"
+    logger.info "Trying to execute a transfer: #{body}"
 
-    Registro.new.transfer body.split(",")
+    Registro.new.transfer_row AccountingRow.new(body)
     @reply = "Thanks. Registro was updated."
 
     render :template => 'sms_response'
