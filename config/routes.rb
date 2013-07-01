@@ -1,5 +1,8 @@
 MujeresCambiaAccounting::Application.routes.draw do
   get "registro/add"
+  get "registro/transfer"
+
+  match "process_sms" => 'application#process_sms'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
