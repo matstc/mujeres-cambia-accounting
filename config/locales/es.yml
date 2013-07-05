@@ -1,4 +1,8 @@
 es:
+  response:
+    success: "Gracias. El registro se ha actualizado."
+    unrecognized_code: "Lo siento. No reconozco el código: %{code}"
+  transfer: "transferencia"
   date:
     formats:
       default: "%-d de %B"

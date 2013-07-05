@@ -12,7 +12,7 @@ class RegistroController < ApplicationController
     logger.info "Trying to add new accounting record: #{@body}"
 
     Registro.new.add_row AccountingRow.new(@body)
-    @reply = "Thanks. Registro was updated."
+    @reply = I18n.t "response.success"
 
     render :template => 'sms_response'
   end
@@ -21,7 +21,7 @@ class RegistroController < ApplicationController
     logger.info "Trying to execute a transfer: #{@body}"
 
     AccountingRow.create_transfer(@body).inject(Registro.new){|registro, row| registro.add_row(row); registro}
-    @reply = "Thanks. Registro was updated."
+    @reply = I18n.t "response.success"
 
     render :template => 'sms_response'
   end

@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
       redirect_to(method.call(params)) and return 
     end
 
-    @reply = "Sorry. We do not recognize the SMS code you sent: #{sms_code}"
+    @reply = I18n.t("response.unrecognized_code", :code => sms_code)
     render :template => 'sms_response'
   end
 
