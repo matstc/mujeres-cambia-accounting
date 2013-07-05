@@ -20,7 +20,7 @@ class RegistroController < ApplicationController
   def transfer
     logger.info "Trying to execute a transfer: #{@body}"
 
-    Registro.new.transfer_row AccountingRow.new(@body)
+    AccountingRow.create_transfer(@body).inject(Registro.new){|registro, row| registro.add_row(row); registro}
     @reply = "Thanks. Registro was updated."
 
     render :template => 'sms_response'

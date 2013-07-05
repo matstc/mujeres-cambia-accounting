@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   def process_sms
     body = params["Body"]
     logger.info "Received new sms: #{body}"
-    sms_code = body.split(",")[0]
+    sms_code = body.split(",")[0].upcase
 
     if @@COMMANDS.include? sms_code
       method = Rails.application.routes.url_helpers.method(@@COMMANDS[sms_code])

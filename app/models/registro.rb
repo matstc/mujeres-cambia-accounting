@@ -34,7 +34,4 @@ class Registro
 
     formulas
   end
-
-  def transfer row
-  end
 end

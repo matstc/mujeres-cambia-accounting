@@ -6,6 +6,14 @@ class AccountingRow
     @date = Time.now
   end
 
+  def self.create_transfer params
+    id, amount, account1, account2 = *params
+    [ 
+      AccountingRow.new([id, "transfer", 0 - amount.to_f, account1]), 
+      AccountingRow.new([id, "transfer", amount.to_f, account2])
+    ]
+  end
+
   def cell_values
     incoming = nil
     outgoing = nil
