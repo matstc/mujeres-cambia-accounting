@@ -8,4 +8,4 @@ es:
   date:
     formats:
       default: "%-d de %B"
-    month_names: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "deciembre"]
+    month_names: [nil, "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "deciembre"]
