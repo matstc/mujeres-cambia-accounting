@@ -1,17 +1,33 @@
 class AccountingRow
   attr_accessor :date, :id, :description, :amount, :account
   
-  def initialize params
-    @id, @description, @amount, @account = *params
-    @date = Date.today
+  def self.parse params
+    if params.join.start_with?("#")
+      params
+    else
+      [nil, *params]
+    end
+  end
+
+  def self.drop_nil_id array
+    array[0].nil? ? array.drop(1) : array
   end
 
   def self.create_transfer params
-    id, amount, account1, account2 = *params
+    id, amount, account1, account2 = AccountingRow.parse(params)
     [ 
-      AccountingRow.new([id, I18n.t("transfer"), 0 - amount.to_f, account1]), 
-      AccountingRow.new([id, I18n.t("transfer"), amount.to_f, account2])
+      AccountingRow.new(AccountingRow.drop_nil_id([id, I18n.t("transfer"), 0 - amount.to_f, account1])), 
+      AccountingRow.new(AccountingRow.drop_nil_id([id, I18n.t("transfer"), amount.to_f, account2]))
     ]
+  end
+
+  def initialize params
+    @id, @description, @amount, @account = AccountingRow.parse(params)
+    @date = Date.today
+  end
+
+  def is_valid?
+    !@description.nil? and !@amount.nil? and !@account.nil?
   end
 
   def cell_values
@@ -23,7 +39,6 @@ class AccountingRow
       outgoing = @amount.to_f.abs
     end
 
-    [I18n.localize(@date), @id, @description, incoming, outgoing, @account]
+    [I18n.localize(@date), @id.nil? ? @id : @id.sub(/^#/,''), @description, incoming, outgoing, @account]
   end
-
 end

@@ -11,8 +11,13 @@ class RegistroController < ApplicationController
   def add
     logger.info "Trying to add new accounting record: #{@body}"
 
-    Registro.new.add_row AccountingRow.new(@body)
-    @reply = I18n.t "response.success"
+    row = AccountingRow.new @body
+    if row.is_valid?
+      Registro.new.add_row row
+      @reply = I18n.t "response.success"
+    else
+      @reply = I18n.t "response.invalid_row"
+    end
 
     render :template => 'sms_response'
   end
@@ -20,8 +25,13 @@ class RegistroController < ApplicationController
   def transfer
     logger.info "Trying to execute a transfer: #{@body}"
 
-    AccountingRow.create_transfer(@body).inject(Registro.new){|registro, row| registro.add_row(row); registro}
-    @reply = I18n.t "response.success"
+    rows = AccountingRow.create_transfer(@body)
+    if rows.all? {|row| row.is_valid?}
+      rows.inject(Registro.new){|registro, row| registro.add_row(row); registro}
+      @reply = I18n.t "response.success"
+    else
+      @reply = I18n.t "response.invalid_transfer"
+    end
 
     render :template => 'sms_response'
   end
