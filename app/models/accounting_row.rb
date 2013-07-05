@@ -3,7 +3,7 @@ class AccountingRow
   
   def initialize params
     @id, @description, @amount, @account = *params
-    @date = Time.now
+    @date = Date.today
   end
 
   def self.create_transfer params
@@ -23,7 +23,7 @@ class AccountingRow
       outgoing = @amount.to_f.abs
     end
 
-    [@date, @id, @description, incoming, outgoing, @account]
+    [I18n.localize(@date), @id, @description, incoming, outgoing, @account]
   end
 
 end
