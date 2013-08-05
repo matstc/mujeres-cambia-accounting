@@ -8,9 +8,25 @@ class Registro
     session.spreadsheet_by_title("TestRegistro").worksheet_by_title("Registro")
   end
 
-  def add_row row
+  def add_row row_string
+    row = AccountingRow.new row_string
+    return "response.invalid_row" if not row.is_valid?
+
+    add_accounting_row row
+    "response.success"
+  end
+
+  def transfer row_strings
+    rows = AccountingRow.create_transfer(row_strings)
+    return "response.invalid_transfer" if not rows.all? {|row| row.is_valid?}
+
+    rows.each{|row| add_accounting_row(row)}
+    "response.success"
+  end
+
+  def add_accounting_row accounting_row
     last_row = @ws.rows[@ws.num_rows - 1]
-    @ws.update_cells(@ws.num_rows + 1, 1, [row.cell_values + generate_formulas])
+    @ws.update_cells(@ws.num_rows + 1, 1, [accounting_row.cell_values + generate_formulas])
     @ws.save
   end
 

@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   before_filter :check_variables
 
   @@COMMANDS = {
-    "A" => :registro_add_path,
-    "T" => :registro_transfer_path
+    "A" => "Registro.new.method(:add_row)",
+    "T" => "Registro.new.method(:transfer)"
   }
 
   def check_variables
@@ -17,16 +17,22 @@ class ApplicationController < ActionController::Base
   end
  
   def process_sms
-    body = params["Body"]
-    logger.info "Received new sms: #{body}"
-    sms_code = body.split(",")[0].upcase
+    sms = params["Body"]
+    logger.info "Received new sms: #{sms}"
 
-    if @@COMMANDS.include? sms_code
-      method = Rails.application.routes.url_helpers.method(@@COMMANDS[sms_code])
-      redirect_to(method.call(params)) and return 
-    end
+    bodies = sms.split(";")
+    @replies = bodies.map {|body_string|
+      body = body_string.split(",")
+      sms_code = body[0].upcase
 
-    @reply = I18n.t("response.unrecognized_code", :code => sms_code)
+      if @@COMMANDS.include? sms_code
+        method = eval(@@COMMANDS[sms_code])
+        I18n.t(method.call(body.drop(1)))
+      else
+        I18n.t("response.unrecognized_code", :code => sms_code)
+      end
+    }
+
     render :template => 'sms_response'
   end
 
