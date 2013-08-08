@@ -4,7 +4,9 @@ class ApplicationController < ActionController::Base
 
   @@COMMANDS = {
     "A" => "Registro.new.method(:add_row)",
-    "T" => "Registro.new.method(:transfer)"
+    "T" => "Registro.new.method(:transfer)",
+    "I" => "Registro.new.method(:state_of_one_account)",
+    "INFORME" => "Registro.new.method(:state_of_all_accounts)"
   }
 
   def check_variables
@@ -21,16 +23,16 @@ class ApplicationController < ActionController::Base
     logger.info "Received new sms: #{sms}"
 
     bodies = sms.split(";")
-    exceptions = []
+    responses = []
     bodies.each {|body_string|
       begin
-        process_single_body_string body_string
+        responses << process_single_body_string(body_string)
       rescue Exception => e
-        exceptions << e
+        responses << e
       end
     }
 
-    @reply = manufacture_response(exceptions)
+    @reply = responses.map{|r|r.to_s}.join("; ")
     render :template => 'sms_response'
   end
 
@@ -38,15 +40,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  def manufacture_response exceptions
-    if exceptions.empty?
-      I18n.t("response.success")
-    elsif exceptions.size > 1
-      "#{I18n.t("response.errors")} #{exceptions.map {|e| e.to_s}.join(" ")}"
-    else
-      "#{exceptions.map {|e| e.to_s}.join(" ")}"
-    end
-  end
 
   def process_single_body_string body_string
     body = body_string.split(",")

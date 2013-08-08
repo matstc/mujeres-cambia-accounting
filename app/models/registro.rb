@@ -3,9 +3,21 @@ class Registro
     @ws = worksheet
   end
 
-  def worksheet
-    session = GoogleDrive.login(ENV['gmail'], ENV['gmailp'])
-    session.spreadsheet_by_title("TestRegistro").worksheet_by_title("Registro")
+  def state_of_one_account account_string
+    account_name = account_string[0]
+    account_names = @ws.list[0].keys.map{|k| k.downcase}
+    column = account_names.index(account_name.downcase)
+    raise Exception.new(I18n.t("response.invalid_account", :name => account_name)) if column.nil?
+
+    "#{@ws.list[0].keys[column]}: #{@ws[@ws.num_rows, column + 1]}"
+  end
+
+  def state_of_all_accounts *args
+    (7..@ws.num_cols).map{|column|
+      name = @ws[1, column]
+      state = @ws[@ws.num_rows, column]
+      "#{name}: #{state}"
+    }.join("; ")
   end
 
   def add_row row_string
@@ -13,6 +25,7 @@ class Registro
     raise Exception.new(I18n.t("response.invalid_row")) if not row.is_valid?
 
     add_accounting_row row
+    I18n.t("response.success")
   end
 
   def transfer row_strings
@@ -20,10 +33,11 @@ class Registro
     raise Exception.new(I18n.t("response.invalid_transfer")) if not rows.all? {|row| row.is_valid?}
 
     rows.each{|row| add_accounting_row(row)}
+    I18n.t("response.success")
   end
 
+  private
   def add_accounting_row accounting_row
-    last_row = @ws.rows[@ws.num_rows - 1]
     @ws.update_cells(@ws.num_rows + 1, 1, [accounting_row.cell_values + generate_formulas])
     @ws.save
   end
@@ -48,4 +62,10 @@ class Registro
 
     formulas
   end
+
+  def worksheet
+    session = GoogleDrive.login(ENV['gmail'], ENV['gmailp'])
+    session.spreadsheet_by_title("TestRegistro").worksheet_by_title("Registro")
+  end
+
 end
