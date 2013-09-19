@@ -22,7 +22,9 @@ class Registro
 
   def add_row row_string
     row = AccountingRow.new row_string
-    raise Exception.new(I18n.t("response.invalid_row")) if not row.is_valid?
+    if not row.is_valid?(account_names)
+      raise Exception.new("#{I18n.t("response.invalid_row")} #{row.errors(account_names).map{|s|I18n.t(s)}.join(" ")}")
+    end
 
     add_accounting_row row
     I18n.t("response.success")
@@ -30,7 +32,7 @@ class Registro
 
   def transfer row_strings
     rows = AccountingRow.create_transfer(row_strings)
-    raise Exception.new(I18n.t("response.invalid_transfer")) if not rows.all? {|row| row.is_valid?}
+    raise Exception.new(I18n.t("response.invalid_transfer")) if not rows.all? {|row| row.is_valid?(account_names)}
 
     rows.each{|row| add_accounting_row(row)}
     I18n.t("response.success")
@@ -40,6 +42,10 @@ class Registro
   def add_accounting_row accounting_row
     @ws.update_cells(@ws.num_rows + 1, 1, [accounting_row.cell_values + generate_formulas])
     @ws.save
+  end
+
+  def account_names
+    @ws.rows[0].drop(6)
   end
 
   # It would be nice to just copy the formulas from the row above but I could not find a way

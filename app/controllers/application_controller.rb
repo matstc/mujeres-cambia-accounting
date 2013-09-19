@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
       begin
         responses << process_single_body_string(body_string)
       rescue Exception => e
+        logger.warn "An exception was raised processing the sms: #{e.backtrace.join("\n")}"
         responses << e
       end
     }

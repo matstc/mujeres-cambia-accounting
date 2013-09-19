@@ -2,10 +2,16 @@ es:
   response:
     success: "Gracias. El registro se ha actualizado."
     errors: "Algunos errores occurrieron."
-    unrecognized_code: "Lo siento. No reconozco el código: %{code}"
-    invalid_row: "Lo siento. No pude entender su entrada. El formato para nuevos renglones es: A,#ID,descripción,cantidad,cuenta (la ID es opcional)"
-    invalid_transfer: "Lo siento. No pude entender su entrada. El formato para transferencias es: T,#ID,cantidad,cuenta una, cuenta dos (la ID es opcional)"
+    unrecognized_code: "Lo siento. No reconozco el código: %{code}."
+    invalid_row: "Lo siento. No pude entender su entrada. El formato para nuevos renglones es: A,#ID,descripción,cantidad,cuenta (la ID es opcional)."
+    invalid_transfer: "Lo siento. No pude entender su entrada. El formato para transferencias es: T,#ID,cantidad,cuenta una, cuenta dos (la ID es opcional)."
     invalid_account: "Lo siento. Esta cuenta no existe: %{name}"
+  invalid_row:
+    description_blank: "Hay que proveer una descripción."
+    amount_blank: "Hay que proveer una cantidad."
+    account_blank: "Hay que proveer una cuenta."
+    account_not_found: "No reconozco esta cuenta."
+    amount_not_a_number: "La cantidad tiene que ser numérica."
   transfer: "transferencia"
   date:
     formats:

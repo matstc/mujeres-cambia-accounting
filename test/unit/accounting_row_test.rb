@@ -37,11 +37,16 @@ class PostTest < ActiveSupport::TestCase
 
   test "validates basic accounting row" do
     row = AccountingRow.new(["description", 1, "account"])
-    assert_equal(true, row.is_valid?)
+    assert_equal(true, row.is_valid?(["account"]))
   end
 
   test "invalidates accounting row without enough information" do
     row = AccountingRow.new(["description", 1])
-    assert_equal(false, row.is_valid?)
+    assert_equal(false, row.is_valid?(["account"]))
+  end
+
+  test "invalidates accounting row if quantity is not a number" do
+    row = AccountingRow.new(["description", "a", "account"])
+    assert_equal(false, row.is_valid?(["account"]))
   end
 end

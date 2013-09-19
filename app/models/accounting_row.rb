@@ -26,8 +26,18 @@ class AccountingRow
     @date = Date.today
   end
 
-  def is_valid?
-    !@description.nil? and !@amount.nil? and !@account.nil?
+  def errors account_names
+    errors = []
+    errors << "invalid_row.description_blank" if @description.blank? 
+    errors << "invalid_row.amount_blank" if @amount.blank? 
+    errors << "invalid_row.amount_not_a_number" if !@amount.blank? and !@amount.to_s.is_number?
+    errors << "invalid_row.account_blank" if @account.blank?
+    errors << "invalid_row.account_not_found" if !account_names.include?(@account)
+    errors
+  end
+
+  def is_valid? account_names
+    errors(account_names).empty?
   end
 
   def cell_values
